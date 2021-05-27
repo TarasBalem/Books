@@ -1,9 +1,10 @@
 import React from "react";
-import PropTypes from "prop-types";
-import {connect} from "react-redux";
+import {useSelector} from "react-redux";
 import Book from "./Book";
 
-const BooksList = ({books}) => {
+const BooksList = () => {
+  const books = useSelector((state) => state.books);
+
   return (
     <ul className="list-group">
       {books.map((book) => (
@@ -17,14 +18,4 @@ BooksList.defaultProps = {
   books: [],
 };
 
-BooksList.propTypes = {
-  books: PropTypes.array,
-};
-
-function mapStateToProps(state) {
-  return {
-    books: state.books,
-  };
-}
-
-export default connect(mapStateToProps)(BooksList);
+export default BooksList;

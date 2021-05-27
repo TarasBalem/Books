@@ -1,12 +1,29 @@
-import React from "react";
-import {connect} from "react-redux";
+import React, {memo, useCallback, useMemo} from "react";
+import {useSelector, useDispatch} from "react-redux";
 import PropTypes from "prop-types";
-import {selectBookAction} from "../Actions";
+import C from "../constants";
 
-const Book = ({book, toggle, isActive}) => {
+function useActiveBook(book) {
+  const dispatch = useDispatch();
+  const activeBook = useSelector((state) => state.activeBook);
+  const isActive = useMemo(
+    () => activeBook === book._id,
+    [activeBook, book._id]
+  );
+
+  const setActive = useCallback(() => {
+    dispatch({type: C.SELECT_BOOK, payload: {id: book._id}});
+  }, [book._id, dispatch]);
+
+  return {isActive, setActive};
+}
+
+const Book = ({book}) => {
+  const {isActive, setActive} = useActiveBook(book);
+
   return (
     <li className="list-group-item">
-      <h2 onClick={toggle}>Title:{book.title}</h2>
+      <h2 onClick={setActive}>Title:{book.title}</h2>
       <p>Category:{book.categoryId}</p>
       {isActive && <p>{book.desc}</p>}
     </li>
@@ -26,16 +43,4 @@ Book.propTypes = {
   }).isRequired,
 };
 
-function mapStateToProps(state, ownProps) {
-  return {
-    isActive: state.activeBook === ownProps.book._id,
-  };
-}
-
-function mapDispatchToProps(dispatch, ownProps) {
-  return {
-    toggle: () => dispatch(selectBookAction(ownProps.book._id)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Book);
+export default memo(Book);

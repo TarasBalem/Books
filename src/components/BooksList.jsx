@@ -1,9 +1,19 @@
 import React from "react";
 import {useSelector} from "react-redux";
+import {createSelector} from "reselect";
 import Book from "./Book";
 
+const booksSelector = createSelector(
+  (state) => state.books,
+  (state) => state.cats,
+  (books, cats) =>
+    cats.selectedCategory
+      ? books.filter((book) => book.categoryId === cats.selectedCategory)
+      : books
+);
+
 const BooksList = () => {
-  const books = useSelector((state) => state.books);
+  const books = useSelector(booksSelector);
 
   return (
     <ul className="list-group">

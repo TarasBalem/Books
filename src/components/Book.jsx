@@ -6,7 +6,7 @@ import C from "../constants";
 function useActiveBook(book) {
   const dispatch = useDispatch();
   const activeBook = useSelector((state) => state.activeBook);
-  const cats = useSelector((state) => state.cats);
+  const cats = useSelector((state) => state.cats.categories);
 
   const catName = cats[book.categoryId].title;
 
